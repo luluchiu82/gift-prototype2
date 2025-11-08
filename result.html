@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>送禮完成</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+<header>
+  <h1 class="logo">送禮完成 🎁</h1>
+</header>
+<main class="menu">
+  <div id="card" class="card-preview" style="text-align:left;padding:20px;"></div>
+  <button class="btn-main" onclick="generateImage()">生成卡片圖片</button>
+  <img id="finalImage" style="margin-top:15px;">
+  <p>分享連結：</p>
+  <p id="shareLink" style="word-break:break-all;"></p>
+</main>
+
+<script>
+const gift = sessionStorage.getItem('gift');
+const recipient = sessionStorage.getItem('recipient');
+const message = sessionStorage.getItem('message');
+const color = sessionStorage.getItem('color') || '#ffffff';
+
+const card = document.getElementById('card');
+card.style.background = color;
+card.innerHTML = `<h3>🎁 ${gift}</h3><p style="white-space: pre-wrap;">${message}</p><p style="font-size:14px;color:#888;">— ${recipient}</p>`;
+
+function generateImage(){
+  html2canvas(card).then(canvas=>{
+    const imgData = canvas.toDataURL('image/png');
+    document.getElementById('finalImage').src = imgData;
+    document.getElementById('shareLink').innerText = "https://mygift.app/share/"+Math.random().toString(36).substr(2,6);
+  });
+}
+</script>
+</body>
+</html>

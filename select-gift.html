@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>選擇禮品</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 class="logo">選擇禮品</h1>
+</header>
+<main class="menu">
+  <div class="gift-option" onclick="selectGift(this, '花束 + 巧克力')">💐 花束 + 巧克力</div>
+  <div class="gift-option" onclick="selectGift(this, '香氛蠟燭禮盒')">🕯️ 香氛蠟燭禮盒</div>
+  <div class="gift-option" onclick="selectGift(this, '咖啡禮盒')">☕ 咖啡禮盒</div>
+  <button onclick="nextPage()" class="btn-main">下一步：填寫卡片</button>
+</main>
+<script>
+let selectedGift = null;
+function selectGift(el, gift) {
+  document.querySelectorAll('.gift-option').forEach(opt => opt.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedGift = gift;
+}
+function nextPage() {
+  if(!selectedGift){ alert('請先選擇一份禮物！'); return; }
+  sessionStorage.setItem('gift', selectedGift);
+  location.href='write-card.html';
+}
+</script>
+</body>
+</html>

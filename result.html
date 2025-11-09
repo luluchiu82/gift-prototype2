@@ -6,7 +6,7 @@
   <title>送出心意結果</title>
   <link rel="stylesheet" href="style.css" />
 
-  <!-- ✅ 使用 CDN 載入 QR Code 函式庫 -->
+  <!-- ✅ 使用 CDN 載入 QRCode 函式庫 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="result-page">
@@ -19,37 +19,41 @@
     <p><strong>禮物：</strong><span id="giftText"></span></p>
   </div>
 
-  <div id="shareLinkContainer"></div>
+  <div id="shareLinkContainer">
+    <p>🔗 分享連結：</p>
+    <a id="shareLink" href="#" target="_blank"></a>
+    <div id="qrcode" style="margin-top:20px;"></div>
+  </div>
 
   <script>
-    // 取得傳遞的參數
-    const urlParams = new URLSearchParams(window.location.search);
-    const name = urlParams.get("name");
-    const message = urlParams.get("message");
-    const drink = urlParams.get("drink");
-    const gift = urlParams.get("gift");
+    // 取得網址參數
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name") || "（未填寫）";
+    const message = params.get("message") || "（無訊息）";
+    const drink = params.get("drink") || "（未選擇飲料）";
+    const gift = params.get("gift") || "（未選擇禮物）";
 
-    // 顯示卡片內容
+    // 顯示文字
     document.getElementById("messageText").textContent = `To ${name}：${message}`;
     document.getElementById("drinkText").textContent = drink;
     document.getElementById("giftText").textContent = gift;
 
-    // 產生分享連結（指向 view.html）
-    const shareUrl = `${window.location.origin}${window.location.pathname.replace("result.html", "view.html")}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&drink=${encodeURIComponent(drink)}&gift=${encodeURIComponent(gift)}`;
+    // 🔗 生成分享連結
+    const baseUrl = window.location.origin + window.location.pathname.replace("result.html", "view.html");
+    const shareUrl = `${baseUrl}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&drink=${encodeURIComponent(drink)}&gift=${encodeURIComponent(gift)}`;
 
-    // 顯示連結與 QRcode
-    const shareDiv = document.getElementById("shareLinkContainer");
-    shareDiv.innerHTML = `
-      <p>🔗 分享連結：</p>
-      <a href="${shareUrl}" target="_blank">${shareUrl}</a>
-      <div id="qrcode"></div>
-    `;
+    // 更新連結文字與 href
+    const linkEl = document.getElementById("shareLink");
+    linkEl.textContent = shareUrl;
+    linkEl.href = shareUrl;
 
-    // 生成 QRcode
-    new QRCode(document.getElementById("qrcode"), {
+    // ✅ 生成 QRcode
+    const qrContainer = document.getElementById("qrcode");
+    qrContainer.innerHTML = ""; // 清空避免重疊
+    new QRCode(qrContainer, {
       text: shareUrl,
-      width: 128,
-      height: 128
+      width: 150,
+      height: 150,
     });
   </script>
 

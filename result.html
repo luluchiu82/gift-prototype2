@@ -124,8 +124,11 @@ function generateImage(){
     img.id = "preview-img";
     preview.appendChild(img);
 
-    // 生成分享連結（Data URL）
-    const shareUrl = `view.html?img=${encodeURIComponent(img.src)}`;
+    // 將卡片圖片存到 sessionStorage，供收禮人使用
+    sessionStorage.setItem('giftCardImage', img.src);
+
+    // 生成分享連結（簡單固定頁面）
+    const shareUrl = `view.html`;
     const link = document.createElement('div');
     link.id = "share-link";
     link.innerHTML = `<p>🔗 可分享連結：</p>

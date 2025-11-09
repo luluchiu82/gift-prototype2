@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>選擇飲料</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1 class="logo">選擇飲料 🧋</h1></header>
+<main class="menu">
+  <div class="item-list">
+    <div class="item" onclick="chooseDrink('芋頭鮮奶', 'images/drink1.png')">
+      <img src="images/drink1.png" alt="芋頭鮮奶"><p>芋頭鮮奶</p>
+    </div>
+    <div class="item" onclick="chooseDrink('珍珠紅茶拿鐵', 'images/drink2.png')">
+      <img src="images/drink2.png" alt="珍珠紅茶拿鐵"><p>珍珠紅茶拿鐵</p>
+    </div>
+  </div>
+</main>
+
+<script>
+function chooseDrink(name, imgPath){
+  sessionStorage.setItem('drink', name);
+  sessionStorage.setItem('drinkImg', imgPath);
+  location.href = 'choose-gift.html';
+}
+</script>
+
+<style>
+.item-list{display:flex;justify-content:center;flex-wrap:wrap;gap:20px;}
+.item{width:120px;text-align:center;cursor:pointer;}
+.item img{width:120px;height:120px;object-fit:cover;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+.item:hover{transform:scale(1.05);}
+</style>
+</body>
+</html>

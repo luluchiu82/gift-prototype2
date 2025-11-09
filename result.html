@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>心意卡片生成結果</title>
-<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <style>
 body {
   background-color: #f7f7f7;
@@ -42,6 +42,7 @@ main {
   padding: 20px;
   text-align: center;
   margin-bottom: 20px;
+  transition: 0.3s;
 }
 #card img {
   border-radius: 12px;
@@ -49,6 +50,17 @@ main {
   height: 80px;
   object-fit: cover;
   margin: 5px;
+}
+#qrcode {
+  display: none;
+  justify-content: center;
+  margin-top: 15px;
+}
+#qrtext {
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 8px;
 }
 .btn {
   padding: 12px 20px;
@@ -69,12 +81,6 @@ main {
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-#share-link {
-  margin-top: 10px;
-  word-break: break-all;
-  color: #4d4d4d;
-  font-size: 0.9rem;
-}
 </style>
 </head>
 <body>
@@ -82,7 +88,12 @@ main {
 
 <main>
   <div id="card">
-    <p>正在載入資料...</p>
+    <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;" id="images"></div>
+    <h3 id="title"></h3>
+    <p id="message" style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;"></p>
+    <p id="recipient" style="font-size:0.9rem; color:#888; margin-top:10px;"></p>
+    <div id="qrcode"></div>
+    <div id="qrtext">結帳時請出示條碼</div>
   </div>
 
   <div id="result-section">
@@ -92,7 +103,7 @@ main {
 </main>
 
 <script>
-// 讀取儲存在 sessionStorage 的資料
+// 讀取資料
 const drink = sessionStorage.getItem('drink') || "";
 const drinkImg = sessionStorage.getItem('drinkImg') || "";
 const gift = sessionStorage.getItem('gift') || "";
@@ -101,40 +112,67 @@ const recipient = sessionStorage.getItem('recipient') || "收禮人";
 const message = sessionStorage.getItem('message') || "祝福語內容";
 const color = sessionStorage.getItem('color') || "#ffffff";
 
-// 更新卡片內容
-const card = document.getElementById('card');
-card.style.background = color;
-card.innerHTML = `
-  <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;">
-    ${drinkImg ? `<img src="${drinkImg}" alt="${drink}">` : ""}
-    ${giftImg ? `<img src="${giftImg}" alt="${gift}">` : ""}
-  </div>
-  <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
-  <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
-  <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
+// 更新卡片
+document.getElementById("images").innerHTML = `
+  ${drinkImg ? `<img src="${drinkImg}" alt="${drink}">` : ""}
+  ${giftImg ? `<img src="${giftImg}" alt="${gift}">` : ""}
 `;
+document.getElementById("title").textContent = `${drink || ""}${gift ? " ＋ " + gift : ""}`;
+document.getElementById("message").textContent = message;
+document.getElementById("recipient").textContent = `— ${recipient}`;
+document.getElementById("card").style.background = color;
 
+// helper: dataURL -> File
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new File([u8arr], filename, {type:mime});
+}
+
+// 生成圖片
 function generateImage(){
   const cardElement = document.getElementById('card');
-  html2canvas(cardElement, { scale: 2 }).then(canvas => {
-    const preview = document.getElementById('preview');
-    preview.innerHTML = ''; // 清空舊內容
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/png');
-    img.id = "preview-img";
-    preview.appendChild(img);
+  const qrDiv = document.getElementById('qrcode');
+  qrDiv.style.display = "flex"; 
+  qrDiv.innerHTML = ""; 
 
-    // 將卡片圖片存到 sessionStorage，供收禮人使用
-    sessionStorage.setItem('giftCardImage', img.src);
-
-    // 生成分享連結（簡單固定頁面）
-    const shareUrl = `view.html`;
-    const link = document.createElement('div');
-    link.id = "share-link";
-    link.innerHTML = `<p>🔗 可分享連結：</p>
-      <a href="${shareUrl}" target="_blank">${shareUrl}</a>`;
-    preview.appendChild(link);
+  // 生成 QR code
+  new QRCode(qrDiv, {
+    text: "付款用 QR code",
+    width: 128,
+    height: 128,
   });
+
+  setTimeout(() => {
+    html2canvas(cardElement, { scale: 2 }).then(canvas => {
+      const preview = document.getElementById('preview');
+      preview.innerHTML = '';
+
+      const img = document.createElement('img');
+      img.src = canvas.toDataURL('image/png');
+      img.id = "preview-img";
+      preview.appendChild(img);
+
+      // 分享按鈕
+      const shareBtn = document.createElement("button");
+      shareBtn.className = "btn";
+      shareBtn.textContent = "分享卡片";
+      shareBtn.onclick = () => {
+        if(navigator.share){
+          navigator.share({
+            files: [dataURLtoFile(img.src, "gift-card.png")],
+            title: "心意卡片"
+          }).catch(err=>console.log(err));
+        } else {
+          alert("你的裝置不支援直接分享，請長按圖片另存。");
+        }
+      };
+      preview.appendChild(shareBtn);
+
+      qrDiv.style.display = "none"; // 隱藏原本 QR
+    });
+  }, 100);
 }
 </script>
 

@@ -1,104 +1,161 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>送出心意結果</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-  <style>
-    body {
-      font-family: "Noto Sans TC", sans-serif;
-      text-align: center;
-      background: #fff;
-      color: #333;
-      padding: 2em;
-    }
-
-    #cardPreview {
-      border: 2px solid #ddd;
-      border-radius: 16px;
-      padding: 1.5em;
-      margin: 1.5em auto;
-      width: 80%;
-      max-width: 400px;
-      background: #fafafa;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    #qrcodeContainer {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #qrcode {
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-
-    #noteText {
-      font-size: 14px;
-      color: #555;
-      margin-top: 5px;
-    }
-
-    a {
-      color: #0066cc;
-      word-break: break-all;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心意卡片生成結果</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<style>
+body {
+  background-color: #f7f7f7;
+  font-family: "Noto Sans TC", sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+header {
+  width: 100%;
+  text-align: center;
+  padding: 15px;
+  background-color: #6fb27b;
+  color: white;
+  font-size: 1.3rem;
+}
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  padding: 20px;
+}
+#card {
+  width: 90%;
+  max-width: 400px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+#card img {
+  border-radius: 12px;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin: 5px;
+}
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+#qrtext {
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+.btn {
+  padding: 12px 20px;
+  background-color: #6fb27b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+.btn:hover { background-color: #5b9968; }
+#preview-img {
+  margin-top: 15px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+#share-link {
+  margin-top: 10px;
+  word-break: break-all;
+  color: #4d4d4d;
+  font-size: 0.9rem;
+}
+</style>
 </head>
 <body>
+<header>🎁 心意卡片生成</header>
 
-  <h2>🎁 你的心意已準備好！</h2>
-
-  <div id="cardPreview">
-    <p id="messageText"></p>
-    <p><strong>飲料：</strong><span id="drinkText"></span></p>
-    <p><strong>禮物：</strong><span id="giftText"></span></p>
+<main>
+  <div id="card">
+    <p>正在載入資料...</p>
   </div>
 
-  <div id="shareLinkContainer">
-    <p>🔗 分享連結：</p>
-    <a id="shareLink" href="#" target="_blank"></a>
+  <div id="result-section">
+    <button class="btn" onclick="generateImage()">生成圖片</button>
+    <div id="preview"></div>
   </div>
+</main>
 
-  <div id="qrcodeContainer">
-    <div id="qrcode"></div>
-    <div id="noteText">結帳時請出示條碼</div>
+<script>
+// 讀取儲存在 sessionStorage 的資料
+const drink = sessionStorage.getItem('drink') || "";
+const drinkImg = sessionStorage.getItem('drinkImg') || "";
+const gift = sessionStorage.getItem('gift') || "";
+const giftImg = sessionStorage.getItem('giftImg') || "";
+const recipient = sessionStorage.getItem('recipient') || "收禮人";
+const message = sessionStorage.getItem('message') || "祝福語內容";
+const color = sessionStorage.getItem('color') || "#ffffff";
+
+// 更新卡片內容
+const card = document.getElementById('card');
+card.style.background = color;
+card.innerHTML = `
+  <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;">
+    ${drinkImg ? `<img src="${drinkImg}" alt="${drink}">` : ""}
+    ${giftImg ? `<img src="${giftImg}" alt="${gift}">` : ""}
   </div>
+  <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
+  <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
+  <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
+  <div id="qrcode"></div>
+  <p id="qrtext">結帳時請出示此條碼</p>
+`;
 
-  <script>
-    // 取得網址參數
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get("name") || "（未填寫）";
-    const message = params.get("message") || "（無訊息）";
-    const drink = params.get("drink") || "（未選擇飲料）";
-    const gift = params.get("gift") || "（未選擇禮物）";
+// 生成 QR code（放在卡片內）
+new QRCode(document.getElementById("qrcode"), {
+  text: window.location.href,
+  width: 128,
+  height: 128,
+});
 
-    // 顯示卡片文字
-    document.getElementById("messageText").textContent = `To ${name}：${message}`;
-    document.getElementById("drinkText").textContent = drink;
-    document.getElementById("giftText").textContent = gift;
+// 生成卡片圖片
+function generateImage(){
+  const cardElement = document.getElementById('card');
+  html2canvas(cardElement, { scale: 2 }).then(canvas => {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = ''; // 清空舊內容
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+    img.id = "preview-img";
+    preview.appendChild(img);
 
-    // 生成分享連結
-    const baseUrl = window.location.origin + window.location.pathname.replace("result.html", "view.html");
-    const shareUrl = `${baseUrl}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&drink=${encodeURIComponent(drink)}&gift=${encodeURIComponent(gift)}`;
+    // 模擬生成分享連結
+    const link = document.createElement('div');
+    link.id = "share-link";
+    link.innerHTML = `<p>🔗 可分享連結：</p>
+      <a href="${window.location.href}" target="_blank">${window.location.href}</a>`;
+    preview.appendChild(link);
+  });
+}
+</script>
 
-    // 顯示連結
-    const linkEl = document.getElementById("shareLink");
-    linkEl.textContent = shareUrl;
-    linkEl.href = shareUrl;
-
-    // 生成 QRcode
-    const qrContainer = document.getElementById("qrcode");
-    qrContainer.innerHTML = ""; // 清空舊內容
-    new QRCode(qrContainer, {
-      text: shareUrl,
-      width: 160,
-      height: 160,
-    });
-  </script>
 </body>
 </html>

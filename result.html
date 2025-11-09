@@ -1,53 +1,57 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>送出心意結果</title>
-<link rel="stylesheet" href="style.css" />
-<script src="qrcode.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>送出心意結果</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- ✅ 使用 CDN 載入 QR Code 函式庫 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body class="result-page">
 
-<h2>🎁 你的心意已準備好！</h2>
+  <h2>🎁 你的心意已準備好！</h2>
 
-<div id="cardPreview">
-  <p id="messageText"></p>
-  <p><strong>飲料：</strong><span id="drinkText"></span></p>
-  <p><strong>禮物：</strong><span id="giftText"></span></p>
-</div>
+  <div id="cardPreview">
+    <p id="messageText"></p>
+    <p><strong>飲料：</strong><span id="drinkText"></span></p>
+    <p><strong>禮物：</strong><span id="giftText"></span></p>
+  </div>
 
-<div id="shareLinkContainer"></div>
+  <div id="shareLinkContainer"></div>
 
-<script>
-  // 取得傳遞的參數
-  const urlParams = new URLSearchParams(window.location.search);
-  const name = urlParams.get("name");
-  const message = urlParams.get("message");
-  const drink = urlParams.get("drink");
-  const gift = urlParams.get("gift");
+  <script>
+    // 取得傳遞的參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get("name");
+    const message = urlParams.get("message");
+    const drink = urlParams.get("drink");
+    const gift = urlParams.get("gift");
 
-  document.getElementById("messageText").textContent = `To ${name}：${message}`;
-  document.getElementById("drinkText").textContent = drink;
-  document.getElementById("giftText").textContent = gift;
+    // 顯示卡片內容
+    document.getElementById("messageText").textContent = `To ${name}：${message}`;
+    document.getElementById("drinkText").textContent = drink;
+    document.getElementById("giftText").textContent = gift;
 
-  // 產生分享連結
-  const shareUrl = `${window.location.origin}${window.location.pathname.replace("result.html", "view.html")}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&drink=${encodeURIComponent(drink)}&gift=${encodeURIComponent(gift)}`;
+    // 產生分享連結（指向 view.html）
+    const shareUrl = `${window.location.origin}${window.location.pathname.replace("result.html", "view.html")}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&drink=${encodeURIComponent(drink)}&gift=${encodeURIComponent(gift)}`;
 
-  // 顯示連結與 QRcode
-  const shareDiv = document.getElementById("shareLinkContainer");
-  shareDiv.innerHTML = `
-    <p>🔗 分享連結：</p>
-    <a href="${shareUrl}" target="_blank">${shareUrl}</a>
-    <div id="qrcode"></div>
-  `;
+    // 顯示連結與 QRcode
+    const shareDiv = document.getElementById("shareLinkContainer");
+    shareDiv.innerHTML = `
+      <p>🔗 分享連結：</p>
+      <a href="${shareUrl}" target="_blank">${shareUrl}</a>
+      <div id="qrcode"></div>
+    `;
 
-  new QRCode(document.getElementById("qrcode"), {
-    text: shareUrl,
-    width: 128,
-    height: 128
-  });
-</script>
+    // 生成 QRcode
+    new QRCode(document.getElementById("qrcode"), {
+      text: shareUrl,
+      width: 128,
+      height: 128
+    });
+  </script>
 
 </body>
 </html>

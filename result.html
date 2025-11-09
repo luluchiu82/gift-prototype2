@@ -146,13 +146,6 @@ function generateImage(){
     img.src = canvas.toDataURL('image/png');
     img.id = "preview-img";
     preview.appendChild(img);
-
-    // 模擬生成分享連結
-    const link = document.createElement('div');
-    link.id = "share-link";
-    link.innerHTML = `<p>🔗 可分享連結：</p>
-      <a href="${window.location.href}" target="_blank">${window.location.href}</a>`;
-    preview.appendChild(link);
   });
 }
 </script>

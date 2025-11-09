@@ -6,6 +6,7 @@
 <title>心意卡片生成結果</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <style>
 body {
   background-color: #f7f7f7;
@@ -42,6 +43,7 @@ main {
   padding: 20px;
   text-align: center;
   margin-bottom: 20px;
+  transition: 0.3s;
 }
 #card img {
   border-radius: 12px;
@@ -49,6 +51,17 @@ main {
   height: 80px;
   object-fit: cover;
   margin: 5px;
+}
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+#qrtext {
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 8px;
 }
 .btn {
   padding: 12px 20px;
@@ -112,8 +125,18 @@ card.innerHTML = `
   <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
   <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
   <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
+  <div id="qrcode"></div>
+  <p id="qrtext">結帳時請出示此條碼</p>
 `;
 
+// 生成 QR code（放在卡片內）
+new QRCode(document.getElementById("qrcode"), {
+  text: window.location.href,
+  width: 128,
+  height: 128,
+});
+
+// 生成卡片圖片
 function generateImage(){
   const cardElement = document.getElementById('card');
   html2canvas(cardElement, { scale: 2 }).then(canvas => {
@@ -124,12 +147,11 @@ function generateImage(){
     img.id = "preview-img";
     preview.appendChild(img);
 
-    // 生成分享連結（Data URL）
-    const shareUrl = `view.html?img=${encodeURIComponent(img.src)}`;
+    // 模擬生成分享連結
     const link = document.createElement('div');
     link.id = "share-link";
     link.innerHTML = `<p>🔗 可分享連結：</p>
-      <a href="${shareUrl}" target="_blank">${shareUrl}</a>`;
+      <a href="${window.location.href}" target="_blank">${window.location.href}</a>`;
     preview.appendChild(link);
   });
 }

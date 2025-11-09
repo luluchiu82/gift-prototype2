@@ -43,6 +43,14 @@ main {
   text-align: center;
   margin-bottom: 20px;
   transition: 0.3s;
+  position: relative;
+}
+#images {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
 }
 #card img {
   border-radius: 12px;
@@ -51,16 +59,18 @@ main {
   object-fit: cover;
   margin: 5px;
 }
+#qrcode-container {
+  display:none; /* 預覽時不顯示 */
+  margin-top: 10px;
+  text-align:center;
+}
 #qrcode {
-  display: none;
-  justify-content: center;
-  margin-top: 15px;
+  margin: 0 auto;
 }
 #qrtext {
-  text-align: center;
   color: #555;
   font-size: 0.9rem;
-  margin-top: 8px;
+  margin-top: 5px;
 }
 .btn {
   padding: 12px 20px;
@@ -88,12 +98,14 @@ main {
 
 <main>
   <div id="card">
-    <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;" id="images"></div>
+    <div id="images"></div>
     <h3 id="title"></h3>
     <p id="message" style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;"></p>
     <p id="recipient" style="font-size:0.9rem; color:#888; margin-top:10px;"></p>
-    <div id="qrcode"></div>
-    <div id="qrtext">結帳時請出示條碼</div>
+    <div id="qrcode-container">
+      <div id="qrcode"></div>
+      <div id="qrtext">結帳時請出示條碼</div>
+    </div>
   </div>
 
   <div id="result-section">
@@ -122,7 +134,7 @@ document.getElementById("message").textContent = message;
 document.getElementById("recipient").textContent = `— ${recipient}`;
 document.getElementById("card").style.background = color;
 
-// helper: dataURL -> File
+// dataURL -> File
 function dataURLtoFile(dataurl, filename) {
   const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
@@ -133,17 +145,18 @@ function dataURLtoFile(dataurl, filename) {
 // 生成圖片
 function generateImage(){
   const cardElement = document.getElementById('card');
-  const qrDiv = document.getElementById('qrcode');
-  qrDiv.style.display = "flex"; 
-  qrDiv.innerHTML = ""; 
+  const qrContainer = document.getElementById('qrcode-container');
+  qrContainer.style.display = "block"; 
+  document.getElementById('qrcode').innerHTML = "";
 
   // 生成 QR code
-  new QRCode(qrDiv, {
+  new QRCode(document.getElementById('qrcode'), {
     text: "付款用 QR code",
     width: 128,
     height: 128,
   });
 
+  // 等 QR code 渲染完成
   setTimeout(() => {
     html2canvas(cardElement, { scale: 2 }).then(canvas => {
       const preview = document.getElementById('preview');
@@ -170,11 +183,10 @@ function generateImage(){
       };
       preview.appendChild(shareBtn);
 
-      qrDiv.style.display = "none"; // 隱藏原本 QR
+      qrContainer.style.display = "none"; // 隱藏原 QR 元素
     });
-  }, 100);
+  }, 200); // 延遲 200ms 保證 QR code 渲染完成
 }
 </script>
-
 </body>
 </html>

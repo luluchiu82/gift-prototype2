@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>收到你的心意！</title>
-<link rel="stylesheet" href="style.css" />
-<script src="qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你的心意卡片</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<style>
+body { font-family: "Noto Sans TC", sans-serif; text-align: center; padding: 2em; background:#f7f7f7; }
+#card { background: #fff; padding: 20px; border-radius: 16px; display:inline-block; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+#qrcode { margin-top: 15px; }
+#qrtext { font-size: 0.9rem; color: #555; margin-top: 5px; }
+</style>
 </head>
-<body class="view-page">
+<body>
 
-<h2>💌 收到一份來自朋友的心意！</h2>
-
-<div id="giftCard">
-  <p id="viewMessage"></p>
-  <p><strong>飲料：</strong><span id="viewDrink"></span></p>
-  <p><strong>禮物：</strong><span id="viewGift"></span></p>
+<h2>🎁 你的心意卡片</h2>
+<div id="card">
+  <h3 id="card-title"></h3>
+  <p id="card-message"></p>
+  <p id="card-recipient" style="color:#888; font-size:0.9rem;"></p>
+  <div id="qrcode"></div>
+  <div id="qrtext">結帳時請出示此條碼</div>
 </div>
 
-<div id="viewQRCode"></div>
-
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const name = params.get("name");
-  const message = params.get("message");
-  const drink = params.get("drink");
-  const gift = params.get("gift");
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name") || "收禮人";
+const drink = params.get("drink") || "";
+const gift = params.get("gift") || "";
+const message = params.get("message") || "";
 
-  document.getElementById("viewMessage").textContent = `From ${name}：${message}`;
-  document.getElementById("viewDrink").textContent = drink;
-  document.getElementById("viewGift").textContent = gift;
+// 更新卡片內容
+document.getElementById("card-title").textContent = `${drink}${gift ? " ＋ " + gift : ""}`;
+document.getElementById("card-message").textContent = message;
+document.getElementById("card-recipient").textContent = `— ${name}`;
 
-  new QRCode(document.getElementById("viewQRCode"), {
-    text: window.location.href,
-    width: 128,
-    height: 128
-  });
+// 生成 QR code
+new QRCode(document.getElementById("qrcode"), {
+  text: window.location.href,
+  width: 128,
+  height: 128,
+});
 </script>
 
 </body>

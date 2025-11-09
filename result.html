@@ -5,11 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>送出心意結果</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- ✅ 使用 CDN 載入 QRCode 函式庫 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      text-align: center;
+      background: #fff;
+      color: #333;
+      padding: 2em;
+    }
+
+    #cardPreview {
+      border: 2px solid #ddd;
+      border-radius: 16px;
+      padding: 1.5em;
+      margin: 1.5em auto;
+      width: 80%;
+      max-width: 400px;
+      background: #fafafa;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    #qrcodeContainer {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #qrcode {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    #noteText {
+      font-size: 14px;
+      color: #555;
+      margin-top: 5px;
+    }
+
+    a {
+      color: #0066cc;
+      word-break: break-all;
+    }
+  </style>
 </head>
-<body class="result-page">
+<body>
 
   <h2>🎁 你的心意已準備好！</h2>
 
@@ -22,7 +62,11 @@
   <div id="shareLinkContainer">
     <p>🔗 分享連結：</p>
     <a id="shareLink" href="#" target="_blank"></a>
-    <div id="qrcode" style="margin-top:20px;"></div>
+  </div>
+
+  <div id="qrcodeContainer">
+    <div id="qrcode"></div>
+    <div id="noteText">結帳時請出示條碼</div>
   </div>
 
   <script>
@@ -33,29 +77,28 @@
     const drink = params.get("drink") || "（未選擇飲料）";
     const gift = params.get("gift") || "（未選擇禮物）";
 
-    // 顯示文字
+    // 顯示卡片文字
     document.getElementById("messageText").textContent = `To ${name}：${message}`;
     document.getElementById("drinkText").textContent = drink;
     document.getElementById("giftText").textContent = gift;
 
-    // 🔗 生成分享連結
+    // 生成分享連結
     const baseUrl = window.location.origin + window.location.pathname.replace("result.html", "view.html");
     const shareUrl = `${baseUrl}?name=${encodeURIComponent(name)}&message=${encodeURIComponent(message)}&drink=${encodeURIComponent(drink)}&gift=${encodeURIComponent(gift)}`;
 
-    // 更新連結文字與 href
+    // 顯示連結
     const linkEl = document.getElementById("shareLink");
     linkEl.textContent = shareUrl;
     linkEl.href = shareUrl;
 
-    // ✅ 生成 QRcode
+    // 生成 QRcode
     const qrContainer = document.getElementById("qrcode");
-    qrContainer.innerHTML = ""; // 清空避免重疊
+    qrContainer.innerHTML = ""; // 清空舊內容
     new QRCode(qrContainer, {
       text: shareUrl,
-      width: 150,
-      height: 150,
+      width: 160,
+      height: 160,
     });
   </script>
-
 </body>
 </html>

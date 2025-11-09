@@ -3,27 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>心意小舖</title>
+<title>心意送送</title>
 <link rel="stylesheet" href="style.css">
+<style>
+body {
+  background-color: #fff;
+  font-family: "Noto Sans TC", sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+header {
+  width: 100%;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #4d4d4d;
+  border-bottom: 1px solid #eee;
+}
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.logo {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #5b8c6a;
+}
+.function-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 80%;
+  max-width: 400px;
+}
+.btn {
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  background-color: #6fb27b;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+}
+.btn:hover {
+  background-color: #5b9968;
+}
+footer {
+  padding: 15px;
+  font-size: 0.8rem;
+  color: #888;
+}
+</style>
 </head>
 <body>
-<header>
-  <h1 class="logo">心意小舖</h1>
-</header>
-<main class="menu">
-  <div class="card">
-    <h2>送出心意 💝</h2>
-    <p>挑選禮物、寫張卡片，傳遞暖暖心意</p>
-    <button onclick="location.href='select-gift.html'" class="btn-main">開始送禮</button>
-  </div>
-  <div class="card disabled">
-    <h2>查看記錄</h2>
-    <p>開發中</p>
-  </div>
-  <div class="card disabled">
-    <h2>我的收藏</h2>
-    <p>開發中</p>
+<header>心意送送</header>
+
+<main>
+  <div class="logo">🤍 傳遞一份溫暖的心意</div>
+
+  <div class="function-list">
+    <button class="btn" onclick="startGift()">送出心意</button>
+    <button class="btn" style="background-color:#ccc;" disabled>查看紀錄（開發中）</button>
+    <button class="btn" style="background-color:#ccc;" disabled>我的收藏（開發中）</button>
   </div>
 </main>
+
+<footer>© 2025 心意送送</footer>
+
+<script>
+function startGift(){
+  // 清除舊資料，確保新流程乾淨
+  sessionStorage.clear();
+  location.href = 'choose-drink.html';
+}
+</script>
+
 </body>
 </html>

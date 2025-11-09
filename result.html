@@ -4,137 +4,157 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>心意卡片生成結果</title>
-<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <style>
 body {
-  background-color: #f7f7f7;
   font-family: "Noto Sans TC", sans-serif;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-header {
-  width: 100%;
+  background: #f7f7f7;
   text-align: center;
-  padding: 15px;
-  background-color: #6fb27b;
-  color: white;
-  font-size: 1.3rem;
-}
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
-  width: 100%;
-  padding: 20px;
+  padding: 2em;
 }
 #card {
   width: 90%;
   max-width: 400px;
-  background-color: #fff;
+  margin: auto;
+  background: #fff;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 20px;
-  text-align: center;
-  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 #card img {
-  border-radius: 12px;
   width: 80px;
   height: 80px;
-  object-fit: cover;
+  border-radius: 12px;
   margin: 5px;
+  object-fit: cover;
+}
+#images {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+#title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+#message {
+  white-space: pre-wrap;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+#recipient {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 10px;
+}
+#qrcode-container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+#preview {
+  margin-top: 20px;
 }
 .btn {
-  padding: 12px 20px;
-  background-color: #6fb27b;
-  color: white;
+  padding: 10px 20px;
+  margin-top: 10px;
   border: none;
   border-radius: 10px;
-  font-size: 1rem;
+  background: #6fb27b;
+  color: #fff;
   cursor: pointer;
-  margin-top: 10px;
-  transition: 0.3s;
 }
-.btn:hover { background-color: #5b9968; }
-#preview-img {
-  margin-top: 15px;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-#share-link {
-  margin-top: 10px;
-  word-break: break-all;
-  color: #4d4d4d;
-  font-size: 0.9rem;
+.btn:hover {
+  background: #5b9968;
 }
 </style>
 </head>
 <body>
-<header>🎁 心意卡片生成</header>
 
-<main>
-  <div id="card">
-    <p>正在載入資料...</p>
-  </div>
+<h2>🎁 心意卡片生成</h2>
 
-  <div id="result-section">
-    <button class="btn" onclick="generateImage()">生成圖片</button>
-    <div id="preview"></div>
-  </div>
-</main>
+<div id="card">
+  <div id="images"></div>
+  <div id="title"></div>
+  <div id="message"></div>
+  <div id="recipient"></div>
+  <div id="qrcode-container"></div>
+</div>
+
+<div id="result">
+  <button class="btn" onclick="generateCard()">生成圖片</button>
+  <div id="preview"></div>
+</div>
 
 <script>
-// 讀取儲存在 sessionStorage 的資料
+// ===== 從 sessionStorage 讀取使用者資料 =====
 const drink = sessionStorage.getItem('drink') || "";
 const drinkImg = sessionStorage.getItem('drinkImg') || "";
 const gift = sessionStorage.getItem('gift') || "";
 const giftImg = sessionStorage.getItem('giftImg') || "";
-const recipient = sessionStorage.getItem('recipient') || "收禮人";
-const message = sessionStorage.getItem('message') || "祝福語內容";
-const color = sessionStorage.getItem('color') || "#ffffff";
+const recipientName = sessionStorage.getItem('recipient') || "";
+const messageText = sessionStorage.getItem('message') || "";
 
 // 更新卡片內容
-const card = document.getElementById('card');
-card.style.background = color;
-card.innerHTML = `
-  <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;">
-    ${drinkImg ? `<img src="${drinkImg}" alt="${drink}">` : ""}
-    ${giftImg ? `<img src="${giftImg}" alt="${gift}">` : ""}
-  </div>
-  <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
-  <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
-  <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
+document.getElementById("images").innerHTML = `
+  ${drinkImg ? `<img src="${drinkImg}" alt="${drink}">` : ""}
+  ${giftImg ? `<img src="${giftImg}" alt="${gift}">` : ""}
 `;
+document.getElementById("title").textContent = `${drink} ${gift ? "＋" + gift : ""}`;
+document.getElementById("message").textContent = messageText;
+document.getElementById("recipient").textContent = recipientName ? `— ${recipientName}` : "";
 
-function generateImage(){
-  const cardElement = document.getElementById('card');
-  html2canvas(cardElement, { scale: 2 }).then(canvas => {
-    const preview = document.getElementById('preview');
-    preview.innerHTML = ''; // 清空舊內容
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/png');
-    img.id = "preview-img";
-    preview.appendChild(img);
+// ===== 生成卡片圖片與分享 =====
+function generateCard(){
+  const qrContainer = document.getElementById("qrcode-container");
+  qrContainer.innerHTML = "";
 
-    // 將卡片圖片存到 sessionStorage，供收禮人使用
-    sessionStorage.setItem('giftCardImage', img.src);
-
-    // 生成分享連結（簡單固定頁面）
-    const shareUrl = `view.html`;
-    const link = document.createElement('div');
-    link.id = "share-link";
-    link.innerHTML = `<p>🔗 可分享連結：</p>
-      <a href="${shareUrl}" target="_blank">${shareUrl}</a>`;
-    preview.appendChild(link);
+  // QR code 內容可改成付款用或任意文字
+  new QRCode(qrContainer, {
+    text: "付款用 QR code",
+    width: 128,
+    height: 128
   });
+
+  // 等一個小時間讓 QR code 渲染
+  setTimeout(() => {
+    html2canvas(document.getElementById("card"), { scale: 2 }).then(canvas => {
+      const preview = document.getElementById("preview");
+      preview.innerHTML = "";
+
+      // 顯示生成圖片
+      const img = document.createElement("img");
+      img.src = canvas.toDataURL("image/png");
+      img.style.maxWidth = "90%";
+      img.style.borderRadius = "12px";
+      preview.appendChild(img);
+
+      // 分享按鈕
+      const shareBtn = document.createElement("button");
+      shareBtn.className = "btn";
+      shareBtn.textContent = "分享卡片";
+      shareBtn.onclick = () => {
+        if (navigator.share) {
+          navigator.share({ files: [dataURLtoFile(img.src, "gift-card.png")], title:"心意卡片" })
+            .catch(err => console.log(err));
+        } else {
+          alert("你的裝置不支援直接分享，請長按圖片另存。");
+        }
+      };
+      preview.appendChild(shareBtn);
+    });
+  }, 200);
+}
+
+// ===== helper: dataURL 轉 File =====
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+  return new File([u8arr], filename, {type:mime});
 }
 </script>
 

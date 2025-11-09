@@ -52,6 +52,17 @@ main {
   object-fit: cover;
   margin: 5px;
 }
+#qrcode {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+#qrtext {
+  text-align: center;
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
 .btn {
   padding: 12px 20px;
   background-color: #6fb27b;
@@ -71,6 +82,12 @@ main {
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
+#share-link {
+  margin-top: 10px;
+  word-break: break-all;
+  color: #4d4d4d;
+  font-size: 0.9rem;
+}
 </style>
 </head>
 <body>
@@ -78,91 +95,59 @@ main {
 
 <main>
   <div id="card">
-    <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;">
-      <img id="drinkImg" src="" alt="">
-      <img id="giftImg" src="" alt="">
-    </div>
-    <h3 id="title"></h3>
-    <p id="message" style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;"></p>
-    <p id="recipient" style="font-size:0.9rem; color:#888; margin-top:10px;"></p>
+    <p>正在載入資料...</p>
   </div>
 
   <div id="result-section">
-    <button class="btn" id="share-btn">分享卡片</button>
+    <button class="btn" onclick="generateImage()">生成圖片</button>
     <div id="preview"></div>
   </div>
 </main>
 
 <script>
-// 讀取資料
+// 讀取儲存在 sessionStorage 的資料
 const drink = sessionStorage.getItem('drink') || "";
-const drinkImgSrc = sessionStorage.getItem('drinkImg') || "";
+const drinkImg = sessionStorage.getItem('drinkImg') || "";
 const gift = sessionStorage.getItem('gift') || "";
-const giftImgSrc = sessionStorage.getItem('giftImg') || "";
+const giftImg = sessionStorage.getItem('giftImg') || "";
 const recipient = sessionStorage.getItem('recipient') || "收禮人";
 const message = sessionStorage.getItem('message') || "祝福語內容";
 const color = sessionStorage.getItem('color') || "#ffffff";
 
-// 更新預覽卡片（不含 QR code）
-document.getElementById('drinkImg').src = drinkImgSrc;
-document.getElementById('drinkImg').alt = drink;
-document.getElementById('giftImg').src = giftImgSrc;
-document.getElementById('giftImg').alt = gift;
-document.getElementById('title').textContent = `${drink || ""}${gift ? " ＋ " + gift : ""}`;
-document.getElementById('message').textContent = message;
-document.getElementById('recipient').textContent = `— ${recipient}`;
-document.getElementById('card').style.background = color;
+// 更新卡片內容
+const card = document.getElementById('card');
+card.style.background = color;
+card.innerHTML = `
+  <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;">
+    ${drinkImg ? `<img src="${drinkImg}" alt="${drink}">` : ""}
+    ${giftImg ? `<img src="${giftImg}" alt="${gift}">` : ""}
+  </div>
+  <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
+  <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
+  <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
+  <div id="qrcode"></div>
+  <p id="qrtext">結帳時請出示此條碼</p>
+`;
 
-// 分享按鈕點擊事件
-document.getElementById('share-btn').addEventListener('click', () => {
-  // 建立一個隱藏的卡片元素，用於生成帶 QR code 的圖片
-  const hiddenCard = document.createElement('div');
-  hiddenCard.style.width = "400px";
-  hiddenCard.style.background = color;
-  hiddenCard.style.padding = "20px";
-  hiddenCard.style.textAlign = "center";
-  hiddenCard.style.borderRadius = "16px";
-  hiddenCard.innerHTML = `
-    <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:10px;">
-      ${drinkImgSrc ? `<img src="${drinkImgSrc}" style="width:80px;height:80px;border-radius:12px;">` : ""}
-      ${giftImgSrc ? `<img src="${giftImgSrc}" style="width:80px;height:80px;border-radius:12px;">` : ""}
-    </div>
-    <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
-    <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
-    <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
-    <div id="qrcode"></div>
-    <p style="text-align:center;color:#555;font-size:0.9rem;margin-top:8px;">結帳時請出示此條碼</p>
-  `;
-  document.body.appendChild(hiddenCard);
-
-  // 生成 QR code
-  new QRCode(hiddenCard.querySelector("#qrcode"), {
-    text: "付款用 QR code",
-    width: 128,
-    height: 128,
-  });
-
-  // 生成圖片並分享
-  html2canvas(hiddenCard, { scale: 2 }).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    if (navigator.share) {
-      fetch(imgData)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], "gift-card.png", { type: blob.type });
-          navigator.share({ files: [file], title: "心意卡片" });
-        })
-        .catch(err => console.log(err));
-    } else {
-      // 桌面端 fallback
-      const a = document.createElement('a');
-      a.href = imgData;
-      a.download = "gift-card.png";
-      a.click();
-    }
-    document.body.removeChild(hiddenCard);
-  });
+// 生成 QR code（放在卡片內）
+new QRCode(document.getElementById("qrcode"), {
+  text: window.location.href,
+  width: 128,
+  height: 128,
 });
+
+// 生成卡片圖片
+function generateImage(){
+  const cardElement = document.getElementById('card');
+  html2canvas(cardElement, { scale: 2 }).then(canvas => {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = ''; // 清空舊內容
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+    img.id = "preview-img";
+    preview.appendChild(img);
+  });
+}
 </script>
 
 </body>

@@ -8,7 +8,8 @@
 <style>
 body { font-family: "Noto Sans TC", sans-serif; text-align: center; padding: 2em; background:#f7f7f7; }
 #card { background: #fff; padding: 20px; border-radius: 16px; display:inline-block; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
-#qrcode { margin-top: 15px; }
+#card img { max-width:90%; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); margin-bottom:15px; }
+#qrcode { margin-top: 10px; display:flex; justify-content:center; }
 #qrtext { font-size: 0.9rem; color: #555; margin-top: 5px; }
 </style>
 </head>
@@ -16,24 +17,17 @@ body { font-family: "Noto Sans TC", sans-serif; text-align: center; padding: 2em
 
 <h2>🎁 你的心意卡片</h2>
 <div id="card">
-  <h3 id="card-title"></h3>
-  <p id="card-message"></p>
-  <p id="card-recipient" style="color:#888; font-size:0.9rem;"></p>
+  <img id="card-img" src="" alt="心意卡片">
   <div id="qrcode"></div>
   <div id="qrtext">結帳時請出示此條碼</div>
 </div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
-const name = params.get("name") || "收禮人";
-const drink = params.get("drink") || "";
-const gift = params.get("gift") || "";
-const message = params.get("message") || "";
+const imgSrc = params.get("img") || "";
 
-// 更新卡片內容
-document.getElementById("card-title").textContent = `${drink}${gift ? " ＋ " + gift : ""}`;
-document.getElementById("card-message").textContent = message;
-document.getElementById("card-recipient").textContent = `— ${name}`;
+// 顯示卡片圖片
+document.getElementById("card-img").src = imgSrc;
 
 // 生成 QR code
 new QRCode(document.getElementById("qrcode"), {

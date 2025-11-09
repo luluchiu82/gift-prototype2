@@ -125,17 +125,18 @@ card.innerHTML = `
   <h3>${drink || ""}${gift ? " ＋ " + gift : ""}</h3>
   <p style="white-space: pre-wrap; font-size:1rem; line-height:1.5; color:#333;">${message}</p>
   <p style="font-size:0.9rem; color:#888; margin-top:10px;">— ${recipient}</p>
-  
+  <div id="qrcode"></div>
+  <p id="qrtext">結帳時請出示此條碼</p>
 `;
-// 生成 QR code（放在卡片內）
+
+// 生成卡片圖片
+function generateImage(){
+  // 生成 QR code（放在卡片內）
   new QRCode(document.getElementById("qrcode"), {
     text: window.location.href,
     width: 128,
     height: 128,
   });
-  
-// 生成卡片圖片
-function generateImage(){
   const cardElement = document.getElementById('card');
   html2canvas(cardElement, { scale: 2 }).then(canvas => {
     const preview = document.getElementById('preview');

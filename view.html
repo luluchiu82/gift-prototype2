@@ -17,18 +17,14 @@ body { font-family: "Noto Sans TC", sans-serif; text-align: center; padding: 2em
 
 <h2>🎁 你的心意卡片</h2>
 <div id="card">
-  <!-- 顯示送禮人生成的卡片圖片 -->
   <img id="card-img" src="" alt="心意卡片">
   <div id="qrcode"></div>
   <div id="qrtext">結帳時請出示此條碼</div>
 </div>
 
 <script>
-// 取得 URL 參數中的卡片圖片
-const params = new URLSearchParams(window.location.search);
-const imgSrc = params.get("img") || "";
-
-// 顯示卡片圖片
+// 從 sessionStorage 取得卡片圖片
+const imgSrc = sessionStorage.getItem('giftCardImage') || "";
 document.getElementById("card-img").src = imgSrc;
 
 // 生成 QR code

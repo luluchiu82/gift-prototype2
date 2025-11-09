@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>選擇禮物</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 class="logo">選擇禮物 🎁</h1>
+</header>
+
+<main class="menu">
+  <div class="gift-list">
+    <div class="gift-item" onclick="chooseGift('花束', 'images/gift1.png')">
+      <img src="images/gift1.png" alt="花束">
+      <p>花束</p>
+    </div>
+    <div class="gift-item" onclick="chooseGift('蛋糕', 'images/gift2.png')">
+      <img src="images/gift2.png" alt="蛋糕">
+      <p>蛋糕</p>
+    </div>
+    <div class="gift-item" onclick="chooseGift('香氛蠟燭', 'images/gift3.png')">
+      <img src="images/gift3.png" alt="香氛蠟燭">
+      <p>香氛蠟燭</p>
+    </div>
+  </div>
+</main>
+
+<script>
+function chooseGift(name, imgPath){
+  sessionStorage.setItem('gift', name);
+  sessionStorage.setItem('giftImg', imgPath);
+  location.href = 'write-card.html';
+}
+</script>
+
+<style>
+.gift-list{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:20px;
+}
+.gift-item{
+  width:100px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+.gift-item img{
+  width:100px;
+  height:100px;
+  object-fit:cover;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.2);
+}
+.gift-item:hover{ transform:scale(1.05); }
+</style>
+
+</body>
+</html>

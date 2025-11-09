@@ -129,15 +129,14 @@ card.innerHTML = `
   <p id="qrtext">結帳時請出示此條碼</p>
 `;
 
-// 生成 QR code（放在卡片內）
-new QRCode(document.getElementById("qrcode"), {
-  text: window.location.href,
-  width: 128,
-  height: 128,
-});
-
 // 生成卡片圖片
 function generateImage(){
+  // 生成 QR code（放在卡片內）
+  new QRCode(document.getElementById("qrcode"), {
+    text: window.location.href,
+    width: 128,
+    height: 128,
+  });
   const cardElement = document.getElementById('card');
   html2canvas(cardElement, { scale: 2 }).then(canvas => {
     const preview = document.getElementById('preview');
@@ -146,13 +145,6 @@ function generateImage(){
     img.src = canvas.toDataURL('image/png');
     img.id = "preview-img";
     preview.appendChild(img);
-
-    // 模擬生成分享連結
-    const link = document.createElement('div');
-    link.id = "share-link";
-    link.innerHTML = `<p>🔗 可分享連結：</p>
-      <a href="${window.location.href}" target="_blank">${window.location.href}</a>`;
-    preview.appendChild(link);
   });
 }
 </script>

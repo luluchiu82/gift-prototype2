@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>收到你的心意！</title>
+<link rel="stylesheet" href="style.css" />
+<script src="qrcode.min.js"></script>
+</head>
+<body class="view-page">
+
+<h2>💌 收到一份來自朋友的心意！</h2>
+
+<div id="giftCard">
+  <p id="viewMessage"></p>
+  <p><strong>飲料：</strong><span id="viewDrink"></span></p>
+  <p><strong>禮物：</strong><span id="viewGift"></span></p>
+</div>
+
+<div id="viewQRCode"></div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get("name");
+  const message = params.get("message");
+  const drink = params.get("drink");
+  const gift = params.get("gift");
+
+  document.getElementById("viewMessage").textContent = `From ${name}：${message}`;
+  document.getElementById("viewDrink").textContent = drink;
+  document.getElementById("viewGift").textContent = gift;
+
+  new QRCode(document.getElementById("viewQRCode"), {
+    text: window.location.href,
+    width: 128,
+    height: 128
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>迷客夏 | 選擇心意</title>
+<style>
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  margin: 0;
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: center;
+}
+header {
+  width: 100%;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+header img {
+  width: 80px;
+}
+main {
+  padding: 30px 20px;
+}
+svg {
+  width: 70%;
+  max-width: 360px;
+  height: auto;
+}
+button {
+  background-color: #6fb27b;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 40px;
+  font-size: 1.1rem;
+  margin: 15px 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background-color: #5d9969;
+}
+p {
+  color: #555;
+  font-size: 1rem;
+  margin: 15px 0 25px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Milksha_logo.svg" alt="迷客夏">
+</header>
+
+<main>
+  <svg viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
+    <path d="M200,10 C250,80 300,160 280,240 C260,320 310,400 280,480 C250,560 220,640 200,730 C180,640 150,560 120,480 C90,400 140,320 120,240 C100,160 150,80 200,10Z" fill="#b7d4a2"/>
+    <circle cx="150" cy="220" r="10" fill="#ff7b7b"/>
+    <circle cx="180" cy="400" r="10" fill="#ff9ea3"/>
+    <circle cx="230" cy="300" r="10" fill="#ff7b7b"/>
+    <circle cx="220" cy="600" r="10" fill="#ff9ea3"/>
+    <circle cx="250" cy="520" r="10" fill="#ff7b7b"/>
+  </svg>
+
+  <p>今天你在的城市送出了 <strong>1,063 杯飲料</strong><br>送一杯飲料給你正在想的人吧！</p>
+
+  <div>
+    <button onclick="location.href='choose-drink.html'">送飲料</button>
+    <button onclick="alert('此功能即將開放')">送現金券</button>
+  </div>
+</main>
+
+</body>
+</html>

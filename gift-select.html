@@ -1,114 +1,93 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>送出心意</title>
+<meta charset="UTF-8">
+<title>台灣送禮地圖</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://d3js.org/topojson.v3.min.js"></script>
 <style>
-body {
-  font-family: "Noto Sans TC", sans-serif;
-  background-color: #f7f7f7;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-
-header {
-  background-color: #ffffff;
-  color: #3b653d;
-  width: 100%;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
-  width: 100%;
-  padding: 20px;
-}
-
-svg {
-  width: 85%;
-  max-width: 400px;
-  margin-top: 20px;
-}
-
-#text {
-  margin-top: 20px;
-  text-align: center;
-  color: #555;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.btn-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.btn {
-  background-color: #6fb27b;
-  color: white;
-  padding: 12px 22px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn:hover {
-  background-color: #5b9968;
-}
-
-footer {
-  width: 100%;
-  text-align: center;
-  padding: 10px;
-  font-size: 0.8rem;
-  color: #888;
-}
+  body {
+    font-family: "Noto Sans TC", sans-serif;
+    background-color: #f8f8f8;
+    text-align: center;
+  }
+  svg {
+    width: 100%;
+    height: 600px;
+  }
+  .city-dot {
+    fill: #e57373;
+    stroke: white;
+    stroke-width: 1px;
+  }
+  p {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  .button {
+    margin-top: 20px;
+    background-color: #77bfa3;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
 </style>
 </head>
-
 <body>
-<header>迷客夏</header>
+  <h2>禮物流向地圖</h2>
+  <svg id="taiwan-map"></svg>
+  <p>今天你在的城市送出了 1,063 杯飲料，送一杯飲料給你正在想的人吧！</p>
+  <button class="button" onclick="location.href='choose-drink.html'">送出心意</button>
 
-<main>
-  <!-- SVG 台灣地圖 -->
-  <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
-    <path d="M100 10 C80 40, 60 80, 70 120 C50 150, 60 190, 70 230 C80 270, 90 310, 100 390 C110 310, 120 270, 130 230 C140 190, 150 150, 130 120 C140 80, 120 40, 100 10 Z" fill="#b5d8a6" stroke="#6fa76e" stroke-width="2"/>
-    <circle cx="80" cy="70" r="5" fill="#ef6f6f"/>
-    <circle cx="120" cy="100" r="6" fill="#f79494"/>
-    <circle cx="100" cy="160" r="5" fill="#ef6f6f"/>
-    <circle cx="90" cy="210" r="6" fill="#f79494"/>
-    <circle cx="120" cy="250" r="5" fill="#ef6f6f"/>
-    <circle cx="100" cy="320" r="6" fill="#f79494"/>
-  </svg>
+<script>
+const width = 500, height = 600;
+const svg = d3.select("#taiwan-map")
+  .attr("viewBox", [0, 0, width, height]);
 
-  <div id="text">
-    今天你在的城市送出了 <strong>1,063</strong> 杯飲料，<br>
-    送一杯飲料給你正在想的人吧！
-  </div>
+// 投影與路徑
+const projection = d3.geoMercator()
+  .center([120.9739, 23.6978]) // 台灣中心經緯度
+  .scale(6000)
+  .translate([width / 2, height / 2]);
+const path = d3.geoPath().projection(projection);
 
-  <div class="btn-container">
-    <button class="btn" onclick="location.href='choose-drink.html'">送飲料</button>
-    <button class="btn" onclick="alert('此功能即將開放！')">送現金券</button>
-  </div>
-</main>
+// 載入台灣的 TopoJSON
+d3.json("https://raw.githubusercontent.com/deldersveld/topojson/master/countries/taiwan/taiwan-counties.json")
+  .then(data => {
+    const counties = topojson.feature(data, data.objects.TWN_adm2);
+    svg.selectAll("path")
+      .data(counties.features)
+      .enter()
+      .append("path")
+      .attr("d", path)
+      .attr("fill", "#b2df8a")
+      .attr("stroke", "#388e3c")
+      .attr("stroke-width", 1);
+  });
 
-<footer>© 2025 Milksha 心意計畫</footer>
+// 城市座標 (經緯度)
+const cities = [
+  { name: "台北", coords: [121.5654, 25.0330] },
+  { name: "台中", coords: [120.6843, 24.1477] },
+  { name: "高雄", coords: [120.3014, 22.6273] },
+  { name: "花蓮", coords: [121.6054, 23.9911] },
+  { name: "台南", coords: [120.2270, 22.9997] }
+];
+
+// 加上紅點
+svg.selectAll("circle")
+  .data(cities)
+  .enter()
+  .append("circle")
+  .attr("class", "city-dot")
+  .attr("r", 6)
+  .attr("transform", d => {
+    const [x, y] = projection(d.coords);
+    return `translate(${x},${y})`;
+  });
+</script>
 </body>
 </html>

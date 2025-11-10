@@ -20,15 +20,35 @@ header {
   background-color: #ffffff;
   color: #3b653d;
   width: 100%;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
   border-bottom: 1px solid #e0e0e0;
 }
 
 header img {
   width: 80px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-content p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #3b653d;
+  margin-right: 15px;
 }
 
 main {
@@ -89,9 +109,11 @@ footer {
 
 <body>
 <header>
-  <button class="back-btn" onclick="history.back()">←</button>
-  <p style="color:#666;font-size:1rem;margin-bottom:20px;">迷客夏</p>
-  <img src="images/Milksha_logo.png" alt="迷點">
+  <button class="back-btn" onclick="history.back()"><</button>
+  <div class="header-content">
+    <p>迷客夏</p>
+    <img src="images/Milksha_logo.png" alt="迷點">
+  </div>
 </header>
 
 <main>

@@ -11,19 +11,27 @@
     background-color: #f8f8f8;
     text-align: center;
   }
+
+  h2 {
+    margin-top: 20px;
+  }
+
   svg {
     width: 100%;
     height: 600px;
   }
+
   .city-dot {
     fill: #e57373;
     stroke: white;
     stroke-width: 1px;
   }
+
   p {
     font-size: 18px;
     margin-top: 10px;
   }
+
   .button {
     margin-top: 20px;
     background-color: #77bfa3;
@@ -34,6 +42,20 @@
     font-size: 16px;
     cursor: pointer;
   }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    text-align: center;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 14px;
+    pointer-events: none;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
+    display: none;
+  }
 </style>
 </head>
 <body>
@@ -42,22 +64,26 @@
   <p>今天你在的城市送出了 1,063 杯飲料，送一杯飲料給你正在想的人吧！</p>
   <button class="button" onclick="location.href='choose-drink.html'">送出心意</button>
 
+  <div class="tooltip" id="tooltip"></div>
+
 <script>
 const width = 500, height = 600;
 const svg = d3.select("#taiwan-map")
   .attr("viewBox", [0, 0, width, height]);
 
-// 投影與路徑
 const projection = d3.geoMercator()
-  .center([120.9739, 23.6978]) // 台灣中心經緯度
+  .center([120.9739, 23.6978])
   .scale(6000)
   .translate([width / 2, height / 2]);
 const path = d3.geoPath().projection(projection);
 
-// 載入台灣的 TopoJSON
+const tooltip = d3.select("#tooltip");
+
+// 載入台灣縣市邊界資料
 d3.json("https://raw.githubusercontent.com/deldersveld/topojson/master/countries/taiwan/taiwan-counties.json")
   .then(data => {
     const counties = topojson.feature(data, data.objects.TWN_adm2);
+
     svg.selectAll("path")
       .data(counties.features)
       .enter()
@@ -65,7 +91,20 @@ d3.json("https://raw.githubusercontent.com/deldersveld/topojson/master/countries
       .attr("d", path)
       .attr("fill", "#b2df8a")
       .attr("stroke", "#388e3c")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 1)
+      .on("mouseover", function(event, d) {
+        d3.select(this).attr("fill", "#81c784");
+        tooltip.style("display", "block")
+               .html(`<strong>${d.properties.NAME_2}</strong>`);
+      })
+      .on("mousemove", function(event) {
+        tooltip.style("left", (event.pageX + 10) + "px")
+               .style("top", (event.pageY - 15) + "px");
+      })
+      .on("mouseout", function() {
+        d3.select(this).attr("fill", "#b2df8a");
+        tooltip.style("display", "none");
+      });
   });
 
 // 城市座標 (經緯度)

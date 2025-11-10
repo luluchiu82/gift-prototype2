@@ -30,27 +30,28 @@ header img {
   width: 80px;
 }
 
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header-content p {
-  margin: 0;
-  font-size: 1rem;
-  color: #666;
-}
-
 .back-btn {
+  position: absolute; /* 絕對定位，不影響中央置中 */
+  left: 20px;
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
   color: #3b653d;
-  margin-right: 15px;
 }
 
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-center p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+  
 main {
   flex: 1;
   display: flex;
@@ -110,7 +111,7 @@ footer {
 <body>
 <header>
   <button class="back-btn" onclick="history.back()"><</button>
-  <div class="header-content">
+  <div class="header-center">
     <p>迷客夏</p>
     <img src="images/Milksha_logo.png" alt="迷點">
   </div>

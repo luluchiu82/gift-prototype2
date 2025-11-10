@@ -3,90 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>送出心意</title>
-<link rel="stylesheet" href="style.css">
+<title>迷客夏 | 送出心意</title>
 <style>
 body {
-  background-color: #fff;
   font-family: "Noto Sans TC", sans-serif;
   margin: 0;
+  background-color: #fff;
+  color: #333;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
 }
 header {
   width: 100%;
-  padding: 20px 0;
   text-align: center;
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #4d4d4d;
+  padding: 15px;
+  background-color: #fff;
   border-bottom: 1px solid #eee;
 }
+header img {
+  width: 80px;
+}
 main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-.logo {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: #5b8c6a;
-}
-.function-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 80%;
-  max-width: 400px;
+  text-align: center;
+  padding: 40px 20px;
 }
 .btn {
-  padding: 15px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  display: inline-block;
+  padding: 15px 35px;
   background-color: #6fb27b;
   color: white;
-  cursor: pointer;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  text-decoration: none;
   transition: 0.3s;
-  text-align: center;
 }
 .btn:hover {
-  background-color: #5b9968;
+  background-color: #5d9969;
 }
 footer {
-  padding: 15px;
-  font-size: 0.8rem;
-  color: #888;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  text-align: center;
+  padding: 10px 0;
+  color: #777;
+  font-size: 0.9rem;
 }
 </style>
 </head>
 <body>
-<header>送出心意</header>
+
+<header>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Milksha_logo.svg" alt="迷客夏">
+</header>
 
 <main>
-  <div class="logo">🤍 傳遞一份溫暖的心意</div>
-
-  <div class="function-list">
-    <button class="btn" onclick="startGift()">送出心意</button>
-    <button class="btn" style="background-color:#ccc;" disabled>查看紀錄（開發中）</button>
-    <button class="btn" style="background-color:#ccc;" disabled>我的收藏（開發中）</button>
-  </div>
+  <img src="https://www.milkshoptea.com/images/banner_tw.jpg" alt="迷客夏飲品" style="width:100%;max-width:400px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);margin-bottom:30px;">
+  <h2>送出你的心意</h2>
+  <p style="color:#666;font-size:1rem;margin-bottom:40px;">將一杯飲料或現金券送給你想祝福的人</p>
+  <a href="gift-select.html" class="btn">送出心意</a>
 </main>
 
-<footer>© 2025 送出心意</footer>
-
-<script>
-function startGift(){
-  // 清除舊資料，確保新流程乾淨
-  sessionStorage.clear();
-  location.href = 'choose-drink.html';
-}
-</script>
+<footer>
+  迷客夏 Milksha © 2025
+</footer>
 
 </body>
 </html>

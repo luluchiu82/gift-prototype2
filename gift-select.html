@@ -141,13 +141,13 @@ footer {
 <script>
 // 設定 SVG 大小
 const svg = d3.select("#taiwan-map");
-const width = Math.min(window.innerWidth * 0.9, 800);
+const width = Math.min(window.innerWidth * 0.95, 800);
 const height = 400;
 svg.attr("width", width).attr("height", height);
 
 // 投影設定
 const projection = d3.geoMercator()
-  .center([121,24])
+  .center([121,23.8])
   .scale(6000)   // 放大台灣
   .translate([width/2, height/2]);
 

@@ -1,12 +1,96 @@
+/* === 全站通用設定 === */
 body {
   font-family: "Noto Sans TC", sans-serif;
   background: #fff;
   color: #333;
+  margin: 0;
+  padding: 0;
   text-align: center;
-  padding: 2em;
 }
 
-#cardPreview, #giftCard {
+/* === 頁首 Header === */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 10px 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.back-btn {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.header-center p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.header-center img {
+  height: 28px;
+  width: auto;
+}
+
+/* === 主要內容區 === */
+main {
+  margin-top: 20px;
+}
+
+/* === 禮物選擇頁面 === */
+.item-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.item {
+  width: 120px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.item img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease;
+}
+
+.item:hover {
+  transform: scale(1.05);
+}
+
+.item p {
+  margin-top: 8px;
+  font-size: 0.95rem;
+}
+
+/* === 禮物卡顯示區塊 === */
+#cardPreview, 
+#giftCard {
   border: 2px solid #ddd;
   border-radius: 16px;
   padding: 1.5em;
@@ -17,11 +101,19 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
+/* === 連結樣式 === */
 a {
   color: #0066cc;
+  text-decoration: none;
   word-break: break-all;
 }
 
-#qrcode, #viewQRCode {
+a:hover {
+  text-decoration: underline;
+}
+
+/* === QR Code 區塊 === */
+#qrcode, 
+#viewQRCode {
   margin-top: 20px;
 }

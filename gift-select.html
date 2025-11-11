@@ -134,7 +134,7 @@ main {
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 // ---------------- 載入 GeoJSON 並繪製台灣地圖 ----------------
-d3.json('data/taiwan/twCounty2010.geo.json').then(geoData => {
+d3.json('twCounty2010.geo.json').then(geoData => {
   const svg = d3.select('#taiwan-map');
   const width = svg.node().clientWidth;
   const height = width * 1.2; // 依比例設定

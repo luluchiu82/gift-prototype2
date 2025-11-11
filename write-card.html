@@ -5,15 +5,87 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>寫卡片</title>
 <link rel="stylesheet" href="style.css">
+<style>
+/* 保留顏色選擇框的樣式 */
+.color-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+  body {
+  font-family: "Noto Sans TC", sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+header {
+  position: relative;
+  background-color: #ffffff;
+  width: 100%;
+  height: 100px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 讓中央區塊置中 */
+}
+
+.back-btn {
+  position: absolute; /* 固定在最左側，不影響中央置中 */
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #3b653d;
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.header-center p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.header-center img {
+  width: 60px;
+  height: auto;
+}
+
+</style>
 </head>
+
 <body>
+
+<!-- ✅ 統一版 Header -->
 <header>
-  <h1 class="logo">填寫卡片</h1>
+  <button class="back-btn" onclick="history.back()"><</button>
+  <div class="header-center">
+    <p>迷客夏</p>
+    <img src="images/Milksha_logo.png" alt="迷點">
+  </div>
 </header>
+
+<!-- ✅ 主要內容 -->
 <main class="menu">
-  <input type="text" id="recipient" placeholder="收禮人姓名" style="width:90%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
-  
-  <textarea id="message" placeholder="寫下祝福的話..." style="width:90%;height:120px;padding:10px;border-radius:10px;border:1px solid #ccc;"></textarea>
+  <input type="text" id="recipient" placeholder="收禮人姓名" 
+         style="width:90%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
+
+  <textarea id="message" placeholder="寫下祝福的話..." 
+            style="width:90%;height:120px;padding:10px;border-radius:10px;border:1px solid #ccc;"></textarea>
 
   <h3>選擇卡片底色</h3>
   <div style="display:flex;justify-content:center;gap:10px;margin:10px 0;">
@@ -30,25 +102,23 @@ let selectedColor = '#ffffff'; // 預設白色
 
 function selectColor(color){
   selectedColor = color;
-  document.querySelectorAll('.color-box').forEach(box=>box.style.border='none');
-  event.target.style.border='2px solid #6fb27b';
+  document.querySelectorAll('.color-box').forEach(box => box.style.border = 'none');
+  event.target.style.border = '2px solid #6fb27b';
 }
 
 function previewCard(){
   const recipient = document.getElementById('recipient').value.trim();
   const msg = document.getElementById('message').value.trim();
-  if(!recipient || !msg){ alert('請輸入收禮人和祝福語！'); return; }
+  if(!recipient || !msg){ 
+    alert('請輸入收禮人和祝福語！'); 
+    return; 
+  }
   sessionStorage.setItem('recipient', recipient);
   sessionStorage.setItem('message', msg);
   sessionStorage.setItem('color', selectedColor);
-  location.href='result.html';
+  location.href = 'result.html';
 }
 </script>
 
-<style>
-.color-box{
-  width:50px; height:50px; border-radius:8px; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,0.2);
-}
-</style>
 </body>
 </html>

@@ -20,15 +20,15 @@ header {
   position: relative;
   background-color: #ffffff;
   width: 100%;
-  height: 60px;
+  height: 100px;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
-  justify-content: center; /* 中央內容置中 */
+  justify-content: center; /* 讓中央區塊置中 */
 }
 
 .back-btn {
-  position: absolute; /* 絕對定位，不影響中央置中 */
+  position: absolute; /* 固定在最左側，不影響中央置中 */
   left: 20px;
   background: none;
   border: none;
@@ -39,8 +39,10 @@ header {
 
 .header-center {
   display: flex;
+  flex-direction: column; /* 垂直排列 */
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 5px;
 }
 
 .header-center p {
@@ -49,8 +51,9 @@ header {
   color: #666;
 }
 
-header img {
+.header-center img {
   width: 80px;
+  height: auto;
 }
   
 main {

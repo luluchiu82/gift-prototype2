@@ -17,7 +17,7 @@ body {
   align-items: center;
   min-height: 100vh;
 }
-  /* ---------- header 樣式 ---------- */
+
 header {
   position: relative;
   background-color: #ffffff;
@@ -26,11 +26,11 @@ header {
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
-  justify-content: center; /* 中央置中 */
+  justify-content: center; /* 讓中央區塊置中 */
 }
 
 .back-btn {
-  position: absolute;
+  position: absolute; /* 固定在最左側，不影響中央置中 */
   left: 20px;
   background: none;
   border: none;
@@ -39,13 +39,9 @@ header {
   color: #3b653d;
 }
 
-.back-btn:hover {
-  color: #5b9968;
-}
-
 .header-center {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* 垂直排列 */
   align-items: center;
   justify-content: center;
   gap: 5px;
@@ -58,7 +54,7 @@ header {
 }
 
 .header-center img {
-  width: 80px;
+  width: 60px;
   height: auto;
 }
 
